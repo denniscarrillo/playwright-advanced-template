@@ -8,7 +8,7 @@ This file contains universal instructions, coding standards, and architectural r
 
 - **Language & Framework**: TypeScript with `@playwright/test`.
 - **Design Pattern**: Page Object Model (POM) + Component Object Model.
-- **Fixture Injection**: All Page Objects, Components, and API Helpers must be provided through custom fixtures in [`src/fixtures/base.fixture.ts`](src/fixtures/base.fixture.ts).
+- **Fixture Injection**: All Page Objects, Components, and API Controllers must be provided through custom fixtures in [`src/fixtures/pages.fixture.ts`](src/fixtures/pages.fixture.ts).
 - **Environment Management**: Environment variables validated via Zod schemas in [`env.config.ts`](env.config.ts) and loaded from `.env.<env>`.
 
 ---
@@ -25,13 +25,14 @@ This file contains universal instructions, coding standards, and architectural r
 ### Rule 2: Page Object & Component Hierarchy
 - Pages representing full views must inherit from [`BasePage`](src/pages/base.page.ts) in `src/pages/`.
 - Reusable page sections (Header, Navigation, Modals) must be encapsulated in `src/pages/components/`.
-- Never instantiate Page Objects directly with `new MyPage(page)` inside test files; always use the extended fixture from `@/fixtures/base.fixture`.
+- API testing and preconditioning must be encapsulated in domain controllers under `src/helpers/api/controllers/` (inheriting from [`BaseApi`](src/helpers/api/base.api.ts)).
+- Never instantiate Page Objects or API Controllers directly with `new MyPage(page)` inside test files; always use the extended fixture from `@/fixtures/pages.fixture` or `@/fixtures/api.fixture`.
 - See detailed guide: [Architecture & POM Reference](.agents/skills/playwright-automation/references/architecture-pom.md).
 
 ### Rule 3: Dynamic Test Data & API Preconditions
 - Never use shared static credentials for destructive actions (e.g., account deletion).
 - Generate isolated test data per test run using [`generateRandomRegistrationData()`](src/utils/generator.util.ts).
-- Prefer pre-seeding state or teardown via [`ApiHelper`](src/helpers/api.helper.ts) to keep tests fast and isolated.
+- Prefer pre-seeding state or teardown via API controllers ([`AuthApi`](src/helpers/api/controllers/auth.api.ts)) to keep tests fast and isolated.
 - See detailed guide: [Test Data & API Reference](.agents/skills/playwright-automation/references/test-data-and-api.md).
 
 ### Rule 4: Resilient Locators & Web-First Assertions

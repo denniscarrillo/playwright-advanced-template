@@ -42,7 +42,7 @@ To avoid repetitive and slow UI login sequences across hundreds of tests, this r
 
 ### A. Global Setup Script ([`src/setup/global.setup.ts`](../src/setup/global.setup.ts))
 Configured in [`playwright.config.ts`](../playwright.config.ts) under `globalSetup`:
-1. Ensures test user account exists via [`ApiHelper`](../src/helpers/api.helper.ts).
+1. Ensures test user account exists via [`AuthApi`](../src/helpers/api/controllers/auth.api.ts).
 2. Logs in via [`LoginPage`](../src/pages/login.page.ts) with `env.DEFAULT_USER` and `env.DEFAULT_PASSWORD`.
 3. Verifies active session with [`HeaderComponent`](../src/pages/components/header.component.ts).
 4. Persists cookies, localStorage, and session tokens to [`AUTH_STORAGE_PATH`](../src/data/constants/auth.ts) (`playwright/.auth/user.json`).
@@ -64,7 +64,7 @@ Controls context creation per test:
 Tests do not need any login steps; they navigate directly to authenticated views:
 
 ```typescript
-import { test, expect } from '@/fixtures/base.fixture';
+import { test, expect } from '@/fixtures/pages.fixture';
 
 test.describe('Authenticated User Features', () => {
   // useAuth: true is applied by default

@@ -1,15 +1,6 @@
 import { test, expect } from '@/fixtures/pages.fixture';
 
 test.describe('Feature: Products Catalog & Details - Authenticated User', () => {
-  test.beforeEach(async ({ page, logger }) => {
-    logger.info('Verify that logged-in state is visible');
-    await test.step('Verify that logged-in state is visible', async () => {
-      await page.goto('/');
-      await page.waitForLoadState('domcontentloaded');
-      await expect(page.getByText(/logged in as/i)).toBeVisible();
-    });
-  });
-
   test('Test Case 8: Verify All Products and product detail page', async ({
     page,
     header,
@@ -19,13 +10,11 @@ test.describe('Feature: Products Catalog & Details - Authenticated User', () => 
   }) => {
     logger.info('Starting Test Case 8: Verify All Products and product detail page');
 
-    await test.step('Navigate to home page', async () => {
+    await test.step('Navigate to home page and verify authenticated state', async () => {
       await page.goto('/');
-    });
-
-    await test.step('Verify that home page is visible successfully', async () => {
       await expect(page).toHaveTitle(/Automation Exercise/);
       await expect(header.navBar).toBeVisible();
+      await expect(page.getByText(/logged in as/i)).toBeVisible();
     });
 
     await test.step("Click on 'Products' button", async () => {

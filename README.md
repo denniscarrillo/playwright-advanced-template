@@ -11,10 +11,11 @@ A production-ready, scalable test automation template for End-to-End (E2E) and A
 ## Key Features
 
 - **Page Object Model (POM) + Components**: Modular architecture leveraging [`BasePage`](src/pages/base.page.ts) and reusable components like [`HeaderComponent`](src/pages/components/header.component.ts).
-- **Dependency Injection (Custom Fixtures)**: All pages, components, API helpers, and logger are injected via [`base.fixture.ts`](src/fixtures/base.fixture.ts).
+- **API Controller Architecture**: Modular API client controllers ([`AuthApi`](src/helpers/api/controllers/auth.api.ts), [`ProductsApi`](src/helpers/api/controllers/products.api.ts), [`BrandsApi`](src/helpers/api/controllers/brands.api.ts)) extending [`BaseApi`](src/helpers/api/base.api.ts).
+- **Dependency Injection (Custom Fixtures)**: Modular fixtures separating API testing ([`api.fixture.ts`](src/fixtures/api.fixture.ts)) and UI Page Objects ([`pages.fixture.ts`](src/fixtures/pages.fixture.ts)).
 - **Enterprise Structured Logging**: Powered by **Winston** and **Daily Rotate File** via [`logger.util.ts`](src/utils/logger.util.ts), preventing slow `console.log` calls and preserving rotated execution logs in `logs/`.
 - **Declarative `test.step()` Composition**: Human-readable, business-aligned steps providing granular HTML reports and timeline traces.
-- **Data Isolation & API Helpers**: Per-test unique data generation with [`generator.util.ts`](src/utils/generator.util.ts) and fast state seeding/teardown via [`ApiHelper`](src/helpers/api.helper.ts).
+- **Data Isolation**: Per-test unique data generation with [`generator.util.ts`](src/utils/generator.util.ts) and fast state seeding/teardown via API controllers.
 - **Environment Validation with Zod**: Strongly typed, schema-validated environment variables via [`env.config.ts`](env.config.ts) and `.env.<env>`.
 - **Universal AI Agent Ready**: Out-of-the-box instructions for **Antigravity**, **Cursor**, **Windsurf**, **Claude Code**, and **GitHub Copilot** via [`AGENTS.md`](AGENTS.md).
 
@@ -30,7 +31,7 @@ playwright-template-v1/
 │       └── references/
 │           ├── test-steps.md               # Declarative testing with test.step()
 │           ├── architecture-pom.md         # Page Object Model and Custom Fixtures
-│           ├── test-data-and-api.md        # Dynamic test data and API helpers
+│           ├── test-data-and-api.md        # Dynamic test data and API controllers
 │           └── locators-and-assertions.md  # Resilient locators and web-first assertions
 ├── docs/                                   # Project architecture & system guides
 │   ├── auth-setup.md                       # Global authentication setup & session persistence
@@ -41,10 +42,16 @@ playwright-template-v1/
 │   │   ├── constants/auth.ts               # Storage state paths
 │   │   └── constants/routes.ts             # Application URL routes
 │   ├── fixtures/                           # Custom Playwright fixtures
+│   │   ├── api.fixture.ts                  # Pure API test fixtures (controllers & logger)
 │   │   ├── auth.fixture.ts                 # Context & session management (useAuth)
-│   │   └── pages.fixture.ts                # Page Objects, helpers & logger injection
-│   ├── helpers/                            # HTTP clients and backend API helpers
-│   │   └── api.helper.ts
+│   │   └── pages.fixture.ts                # Page Objects & UI logger injection
+│   ├── helpers/                            # Backend API clients and domain controllers
+│   │   └── api/
+│   │       ├── base.api.ts                 # Base HTTP client with logging & standard methods
+│   │       └── controllers/                # Domain API controllers
+│   │           ├── auth.api.ts             # Account creation, deletion, login verification
+│   │           ├── products.api.ts         # Products catalog & search endpoints
+│   │           └── brands.api.ts           # Brands catalog endpoints
 │   ├── pages/                              # Page Objects (full views)
 │   │   ├── base.page.ts
 │   │   ├── login.page.ts

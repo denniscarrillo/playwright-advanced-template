@@ -15,6 +15,7 @@ config({ path: path.resolve(__dirname, `.env.${activeEnv}`) });
 
 const baseSchema = z.object({
   BASE_URL: z.url(),
+  API_BASE_URL: z.url(),
   LOGIN_USER: z.string(),
   LOGIN_PASSWORD: z.string(),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
@@ -28,11 +29,7 @@ const qaSchema = baseSchema.extend({
   ENV: z.literal('qa'),
 });
 
-
-const envSchema = z.discriminatedUnion('ENV', [
-  devSchema,
-  qaSchema,
-]);
+const envSchema = z.discriminatedUnion('ENV', [devSchema, qaSchema]);
 
 const env = envSchema.parse({
   ...process.env,

@@ -10,15 +10,16 @@ test.describe('Feature: User Authentication (Login)', () => {
     header,
     loginPage,
     accountStatusPage,
-    apiHelper,
+    authApi,
     logger,
   }) => {
     const userData = generateRandomRegistrationData('login_user');
 
     await test.step('Setup: Create test user via API', async () => {
       logger.info(`Creating test user: ${userData.email}`);
-      const response = await apiHelper.createAccount(userData);
+      const { response, data } = await authApi.createAccount(userData);
       expect(response.status()).toBe(200);
+      expect(data.responseCode).toBe(201);
       logger.info(`Test user created successfully via API`);
     });
 

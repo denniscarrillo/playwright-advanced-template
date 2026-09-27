@@ -5,7 +5,7 @@ import { AccountStatusPage } from '@/pages/account-status.page';
 import { ProductsPage } from '@/pages/products.page';
 import { ProductDetailPage } from '@/pages/product-detail.page';
 import { HeaderComponent } from '@/pages/components/header.component';
-import { ApiHelper } from '@/helpers/api.helper';
+import { AuthApi } from '@/helpers/api/controllers/auth.api';
 import { createLogger, type Logger } from '@/utils/logger.util';
 
 export interface CustomFixtures {
@@ -15,7 +15,7 @@ export interface CustomFixtures {
   productsPage: ProductsPage;
   productDetailPage: ProductDetailPage;
   header: HeaderComponent;
-  apiHelper: ApiHelper;
+  authApi: AuthApi;
   logger: Logger;
 }
 
@@ -55,9 +55,9 @@ export const test = authTest.extend<CustomFixtures>({
     await use(header);
   },
 
-  apiHelper: async ({ request }, use: (apiHelper: ApiHelper) => Promise<void>) => {
-    const apiHelper = new ApiHelper(request);
-    await use(apiHelper);
+  authApi: async ({ request }, use: (authApi: AuthApi) => Promise<void>) => {
+    const authApi = new AuthApi(request);
+    await use(authApi);
   },
 });
 

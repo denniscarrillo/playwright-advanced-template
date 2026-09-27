@@ -5,7 +5,7 @@ import env from '@/../env.config';
 import { AUTH_STORAGE_PATH } from '@/data/constants/auth';
 import { LoginPage } from '@/pages/login.page';
 import { HeaderComponent } from '@/pages/components/header.component';
-import { ApiHelper } from '@/helpers/api.helper';
+import { AuthApi } from '@/helpers/api/controllers/auth.api';
 import { createLogger } from '@/utils/logger.util';
 
 const logger = createLogger('GlobalSetup');
@@ -22,10 +22,10 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
 
   // Pre-seed/ensure global test account exists via API
   const requestContext = await request.newContext({ baseURL });
-  const apiHelper = new ApiHelper(requestContext);
+  const authApi = new AuthApi(requestContext);
   try {
     logger.info(`Ensuring global test user exists via API: ${env.LOGIN_USER}`);
-    await apiHelper.createAccount({
+    await authApi.createAccount({
       title: 'Mr',
       name: 'Global QA User',
       email: env.LOGIN_USER,
