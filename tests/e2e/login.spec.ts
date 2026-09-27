@@ -1,8 +1,8 @@
 import { test, expect } from '@/fixtures/base.fixture';
 import { generateRandomRegistrationData } from '@/utils/generator.util';
 
-test.describe('Test Case 2: Login User with correct email and password', () => {
-  test('debe iniciar sesión exitosamente con credenciales válidas y eliminar la cuenta', async ({
+test.describe('Test Case 1: Login User with correct email and password', () => {
+  test('should successfully log in with valid credentials and delete account', async ({
     page,
     header,
     loginPage,
@@ -11,45 +11,45 @@ test.describe('Test Case 2: Login User with correct email and password', () => {
   }) => {
     const userData = generateRandomRegistrationData('login_user');
 
-    await test.step('Preparación: Crear usuario de prueba vía API', async () => {
+    await test.step('Setup: Create test user via API', async () => {
       const response = await apiHelper.createAccount(userData);
       expect(response.status()).toBe(200);
     });
 
-    await test.step('1 & 2. Navegar a la página principal de Automation Exercise', async () => {
+    await test.step('Navigate to Automation Exercise home page', async () => {
       await page.goto('/');
     });
 
-    await test.step('3. Verificar que la página principal se visualiza correctamente', async () => {
+    await test.step('Verify that home page is visible successfully', async () => {
       await expect(page).toHaveTitle(/Automation Exercise/);
       await expect(header.navBar).toBeVisible();
     });
 
-    await test.step("4. Hacer clic en el botón 'Signup / Login'", async () => {
+    await test.step("Click on 'Signup / Login' button", async () => {
       await header.goToSignupLogin();
     });
 
-    await test.step("5. Verificar que 'Login to your account' está visible", async () => {
+    await test.step("Verify 'Login to your account' is visible", async () => {
       await expect(loginPage.loginHeading).toBeVisible();
     });
 
-    await test.step('6 & 7. Ingresar email y password correctos y hacer clic en el botón de login', async () => {
+    await test.step('Enter correct email address and password and click login button', async () => {
       await loginPage.login({
         email: userData.email,
         password: userData.password,
       });
     });
 
-    await test.step("8. Verificar que 'Logged in as username' está visible con el nombre del usuario", async () => {
+    await test.step("Verify that 'Logged in as username' is visible with user name", async () => {
       await expect(header.loggedInUserText).toBeVisible();
       await expect(header.loggedInUserText).toContainText(userData.name);
     });
 
-    await test.step("9. Hacer clic en el botón 'Delete Account'", async () => {
+    await test.step("Click 'Delete Account' button", async () => {
       await header.deleteAccount();
     });
 
-    await test.step("10. Verificar que 'ACCOUNT DELETED!' es visible y continuar", async () => {
+    await test.step("Verify that 'ACCOUNT DELETED!' is visible and continue", async () => {
       await expect(accountStatusPage.accountDeletedHeading).toBeVisible();
       await accountStatusPage.clickContinue();
     });

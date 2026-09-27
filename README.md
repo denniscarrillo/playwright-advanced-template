@@ -1,4 +1,4 @@
-# Playwright Advanced Automation Template
+# Playwright Advanced Automation Template V1
 
 [![Playwright Tests](https://img.shields.io/badge/Playwright-1.50+-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -135,29 +135,29 @@ test.describe('User Authentication Suite', () => {
       expect(response.status()).toBe(200);
     });
 
-    await test.step('1. Navigate to home page and verify visibility', async () => {
+    await test.step('Navigate to home page and verify visibility', async () => {
       await page.goto('/');
       await expect(header.navBar).toBeVisible();
     });
 
-    await test.step("2. Navigate to 'Signup / Login' form", async () => {
+    await test.step("Navigate to 'Signup / Login' form", async () => {
       await header.goToSignupLogin();
       await expect(loginPage.loginHeading).toBeVisible();
     });
 
-    await test.step('3. Fill credentials and submit login form', async () => {
+    await test.step('Fill credentials and submit login form', async () => {
       await loginPage.login({
         email: userData.email,
         password: userData.password,
       });
     });
 
-    await test.step('4. Verify active session with the correct username', async () => {
+    await test.step('Verify active session with the correct username', async () => {
       await expect(header.loggedInUserText).toBeVisible();
       await expect(header.loggedInUserText).toContainText(userData.name);
     });
 
-    await test.step('5. Teardown: Delete account and verify confirmation', async () => {
+    await test.step('Teardown: Delete account and verify confirmation', async () => {
       await header.deleteAccount();
       await expect(accountStatusPage.accountDeletedHeading).toBeVisible();
       await accountStatusPage.clickContinue();

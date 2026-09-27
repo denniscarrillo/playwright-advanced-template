@@ -39,7 +39,7 @@ import { test, expect } from '@/fixtures/base.fixture';
 import { generateRandomRegistrationData } from '@/utils/generator.util';
 
 test.describe('Test Case Suite: <Feature Name>', () => {
-  test('debe ejecutar el flujo esperado de inicio a fin', async ({
+  test('should execute the expected flow from end to end', async ({
     page,
     header,
     loginPage,
@@ -48,34 +48,34 @@ test.describe('Test Case Suite: <Feature Name>', () => {
   }) => {
     const userData = generateRandomRegistrationData('qa_user');
 
-    await test.step('Preparación: Generar y crear datos de prueba vía API', async () => {
+    await test.step('Setup: Pre-seed test user via API', async () => {
       const response = await apiHelper.createAccount(userData);
       expect(response.status()).toBe(200);
     });
 
-    await test.step('1. Navegar a la página principal y verificar visibilidad', async () => {
+    await test.step('Navigate to home page and verify visibility', async () => {
       await page.goto('/');
       await expect(header.navBar).toBeVisible();
     });
 
-    await test.step("2. Acceder al formulario de Login", async () => {
+    await test.step("Navigate to 'Signup / Login' form", async () => {
       await header.goToSignupLogin();
       await expect(loginPage.loginHeading).toBeVisible();
     });
 
-    await test.step('3. Iniciar sesión con las credenciales creadas', async () => {
+    await test.step('Log in with created credentials', async () => {
       await loginPage.login({
         email: userData.email,
         password: userData.password,
       });
     });
 
-    await test.step('4. Validar que la sesión se encuentra activa', async () => {
+    await test.step('Verify that session is active with correct user', async () => {
       await expect(header.loggedInUserText).toBeVisible();
       await expect(header.loggedInUserText).toContainText(userData.name);
     });
 
-    await test.step('5. Limpiar datos eliminando la cuenta creada', async () => {
+    await test.step('Teardown: Delete created account', async () => {
       await header.deleteAccount();
       await expect(accountStatusPage.accountDeletedHeading).toBeVisible();
       await accountStatusPage.clickContinue();

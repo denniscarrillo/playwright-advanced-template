@@ -17,7 +17,8 @@ This file contains universal instructions, coding standards, and architectural r
 
 ### Rule 1: Always Use Declarative `test.step()`
 - Every test specification **must** organize actions and assertions into `await test.step('Description', async () => { ... })` blocks.
-- Step descriptions must reflect business steps / user actions (e.g. `'1. Navegar a la página principal'`, `'2. Iniciar sesión con credenciales válidas'`).
+- Step descriptions and comments **must be in English** and reflect clear business steps / user actions (e.g. `'Navigate to home page'`, `'Log in with valid credentials'`).
+- **Do not prefix steps with numbers** (avoid `'1. Navigate...'`, `'2. Click...'`); Playwright reports and traces automatically handle sequential ordering.
 - Group the relevant action and its expected verification together in the same step.
 - See detailed guide: [Declarative Steps Reference](.agents/skills/playwright-automation/references/test-steps.md).
 

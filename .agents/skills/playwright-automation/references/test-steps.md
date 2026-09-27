@@ -6,19 +6,21 @@ Organizing tests into descriptive `test.step()` blocks improves code readability
 
 ## 1. Core Principles
 
-1. **Declarative Step Descriptions**:
+1. **Declarative Step Descriptions in English**:
    - Focus on user intent and business actions, not technical implementation details.
-   - Good: `await test.step('1. Iniciar sesión con credenciales válidas', async () => { ... })`
-   - Bad: `await test.step('Llenar inputs y presionar submit', async () => { ... })`
+   - Good: `await test.step('Log in with valid credentials', async () => { ... })`
+   - Bad: `await test.step('Fill inputs and click submit', async () => { ... })`
 
-2. **Step Numbering**:
-   - Prefix steps with their test case numbering when automating specified test cases (e.g. `'1. Navegar a la URL...'`, `'2. Validar que la pantalla principal cargó...'`).
+2. **No Numeric Prefixes (Do Not Enumerate Steps)**:
+   - Do NOT prefix step titles with numbers (e.g., avoid `'1. Navigate...'`, `'2. Verify...'`).
+   - Playwright's test runner, HTML reports, and trace viewer already order, index, and track step execution sequentially.
+   - Unnumbered steps make tests cleaner, more maintainable, and easier to reorder or refactor without renumbering.
 
 3. **Atomic Steps with Assertions**:
    - Group the relevant action and its expected immediate verification in the same step.
 
 4. **Dedicated Data Setup / Teardown Steps**:
-   - Clearly delineate API seed calls, authentication setup, or cleanup teardowns.
+   - Clearly delineate API seed calls, authentication setup, or cleanup teardowns (e.g. `'Setup: Create test user via API'`, `'Teardown: Delete account'`).
 
 ---
 
@@ -29,7 +31,7 @@ import { test, expect } from '@/fixtures/base.fixture';
 import { generateRandomRegistrationData } from '@/utils/generator.util';
 
 test.describe('Test Case X: Feature Title', () => {
-  test('debe completar el flujo exitosamente con pasos declarativos', async ({
+  test('should complete the flow successfully with declarative steps', async ({
     page,
     loginPage,
     header,
@@ -38,40 +40,40 @@ test.describe('Test Case X: Feature Title', () => {
   }) => {
     const userData = generateRandomRegistrationData('test_user');
 
-    // 0. Preparación de datos (Precondición)
-    await test.step('Preparación: Registrar usuario vía API para la prueba', async () => {
+    // Data Setup (Precondition)
+    await test.step('Setup: Create test user via API', async () => {
       const response = await apiHelper.createAccount(userData);
       expect(response.status()).toBe(200);
     });
 
-    // 1. Navegación
-    await test.step('1. Navegar a la página principal', async () => {
+    // Navigation
+    await test.step('Navigate to home page and verify visibility', async () => {
       await page.goto('/');
       await expect(header.navBar).toBeVisible();
     });
 
-    // 2. Interacción con el menú
-    await test.step("2. Hacer clic en 'Signup / Login'", async () => {
+    // Menu Interaction
+    await test.step("Click on 'Signup / Login' button", async () => {
       await header.goToSignupLogin();
       await expect(loginPage.loginHeading).toBeVisible();
     });
 
-    // 3. Ejecución de la acción principal
-    await test.step('3. Ingresar credenciales y realizar login', async () => {
+    // Primary Action
+    await test.step('Log in with user credentials', async () => {
       await loginPage.login({
         email: userData.email,
         password: userData.password,
       });
     });
 
-    // 4. Verificación de resultado
-    await test.step("4. Validar que la sesión se encuentra activa con el usuario correcto", async () => {
+    // Verification
+    await test.step('Verify that session is active with correct user', async () => {
       await expect(header.loggedInUserText).toBeVisible();
       await expect(header.loggedInUserText).toContainText(userData.name);
     });
 
-    // 5. Teardown / Limpieza
-    await test.step("5. Eliminar la cuenta para limpieza", async () => {
+    // Teardown / Cleanup
+    await test.step('Teardown: Delete account', async () => {
       await header.deleteAccount();
       await expect(accountStatusPage.accountDeletedHeading).toBeVisible();
       await accountStatusPage.clickContinue();
