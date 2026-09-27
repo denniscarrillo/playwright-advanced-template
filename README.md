@@ -38,9 +38,11 @@ playwright-template-v1/
 ├── logs/                                   # Daily rotated execution & error logs (ignored in git)
 ├── src/
 │   ├── data/                               # Static constants and route endpoints
-│   │   └── constants/routes.ts
-│   ├── fixtures/                           # Custom Playwright fixtures (injects pages, helpers, logger)
-│   │   └── base.fixture.ts
+│   │   ├── constants/auth.ts               # Storage state paths
+│   │   └── constants/routes.ts             # Application URL routes
+│   ├── fixtures/                           # Custom Playwright fixtures
+│   │   ├── auth.fixture.ts                 # Context & session management (useAuth)
+│   │   └── pages.fixture.ts                # Page Objects, helpers & logger injection
 │   ├── helpers/                            # HTTP clients and backend API helpers
 │   │   └── api.helper.ts
 │   ├── pages/                              # Page Objects (full views)
@@ -50,6 +52,8 @@ playwright-template-v1/
 │   │   ├── account-status.page.ts
 │   │   └── components/                     # Reusable components across views
 │   │       └── header.component.ts
+│   ├── setup/                              # One-time setup scripts
+│   │   └── global.setup.ts                 # Global authentication & cookie persistence
 │   ├── types/                              # TypeScript models and interfaces
 │   │   └── user.types.ts
 │   └── utils/                              # Pure utility functions (generators, logger)
@@ -58,9 +62,11 @@ playwright-template-v1/
 │       └── logger.util.ts                  # Winston + Daily Rotate File configuration
 ├── tests/
 │   ├── api/                                # API / service tests
-│   └── e2e/                                # End-to-End user flow tests
-│       ├── login.spec.ts                   # Example: Dynamic credentials + API setup + login flow
-│       └── signup.spec.ts                  # Example: Full registration and teardown flow
+│   └── e2e/                                # End-to-End user flow tests (grouped by feature)
+│       └── auth/                           # Authentication & User Management feature
+│           ├── login.spec.ts               # Login flows & validations
+│           ├── signup.spec.ts              # Registration flows & duplicate email validations
+│           └── session.spec.ts             # Authenticated session persistence validation
 ├── .env.qa                                 # QA environment configuration
 ├── AGENTS.md                               # Universal rules and guidelines for AI coding agents
 ├── env.config.ts                           # Dotenv loader and Zod schema validation

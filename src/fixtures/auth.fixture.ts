@@ -16,9 +16,7 @@ export interface AuthOptions {
 export const authTest = baseTest.extend<AuthOptions>({
   useAuth: [true, { option: true }],
 
-  context: async ({ browser, useAuth }, use) => {
-    let storageState: string | undefined = undefined;
-
+  storageState: async ({ useAuth }, use) => {
     if (useAuth) {
       if (!fs.existsSync(AUTH_STORAGE_PATH)) {
         logger.error(`Storage state file missing at: ${AUTH_STORAGE_PATH}`);
@@ -28,16 +26,10 @@ export const authTest = baseTest.extend<AuthOptions>({
         );
       }
       logger.debug(`Injecting global authenticated storageState from: ${AUTH_STORAGE_PATH}`);
-      storageState = AUTH_STORAGE_PATH;
+      await use(AUTH_STORAGE_PATH);
     } else {
       logger.debug('useAuth is false - Running with a clean unauthenticated context');
+      await use(undefined);
     }
-
-    const context = await browser.newContext({
-      storageState,
-    });
-
-    await use(context);
-    await context.close();
   },
 });

@@ -1,11 +1,11 @@
 import { test, expect } from '@/fixtures/pages.fixture';
 import { generateRandomRegistrationData } from '@/utils/generator.util';
 
-test.describe('Test Case 1: Login User with correct email and password', () => {
+test.describe('Feature: User Authentication (Login)', () => {
   // Guest flow: Run without pre-authenticated session cookies
   test.use({ useAuth: false });
 
-  test('should successfully log in with valid credentials and delete account', async ({
+  test('Test Case 1: Login User with correct email and password and delete account', async ({
     page,
     header,
     loginPage,
@@ -61,4 +61,3 @@ test.describe('Test Case 1: Login User with correct email and password', () => {
     });
   });
 });
-

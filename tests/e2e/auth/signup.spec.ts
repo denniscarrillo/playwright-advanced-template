@@ -1,11 +1,12 @@
 import { test, expect } from '@/fixtures/pages.fixture';
+import env from '@/../env.config';
 import { generateRandomRegistrationData } from '@/utils/generator.util';
 
-test.describe('Test Case 2: Registration (Signup) flow on Automation Exercise', () => {
-  // Guest flow: Run without pre-authenticated session cookies
+test.describe('Feature: User Registration (Signup)', () => {
+  // Guest flows: Run without pre-authenticated session cookies
   test.use({ useAuth: false });
 
-  test('should register a new user and verify account creation', async ({
+  test('Test Case 2: Register a new user and verify account creation', async ({
     loginPage,
     signupPage,
     accountStatusPage,
@@ -47,6 +48,45 @@ test.describe('Test Case 2: Registration (Signup) flow on Automation Exercise', 
       await header.deleteAccount();
       await expect(accountStatusPage.accountDeletedHeading).toBeVisible();
       await accountStatusPage.clickContinue();
+    });
+  });
+
+  test('Test Case 5: Show error message when registering with an existing email', async ({
+    page,
+    header,
+    loginPage,
+    logger,
+  }) => {
+    const existingEmail = env.LOGIN_USER;
+    const userName = 'Registered User';
+
+    logger.info(`Testing registration rejection with existing email: ${existingEmail}`);
+
+    await test.step('Navigate to home page', async () => {
+      await page.goto('/');
+    });
+
+    await test.step('Verify that home page is visible successfully', async () => {
+      await expect(page).toHaveTitle(/Automation Exercise/);
+      await expect(header.navBar).toBeVisible();
+    });
+
+    await test.step("Click on 'Signup / Login' button", async () => {
+      await header.goToSignupLogin();
+    });
+
+    await test.step("Verify 'New User Signup!' is visible", async () => {
+      await expect(loginPage.signupHeading).toBeVisible();
+    });
+
+    await test.step("Enter name and already registered email address and click 'Signup' button", async () => {
+      await loginPage.initiateSignup(userName, existingEmail);
+    });
+
+    await test.step("Verify error 'Email Address already exist!' is visible", async () => {
+      await expect(loginPage.signupErrorMessage).toBeVisible();
+      await expect(loginPage.signupErrorMessage).toContainText('Email Address already exist!');
+      logger.info('Duplicate email registration error displayed as expected');
     });
   });
 });

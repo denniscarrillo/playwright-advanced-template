@@ -1,9 +1,9 @@
 import { test, expect } from '@/fixtures/pages.fixture';
 
-test.describe('Test Case 3: Authenticated Session with Persistent Storage State', () => {
+test.describe('Feature: Authenticated Session Persistence', () => {
   // useAuth: true is enabled by default
-  
-  test('should load home page with pre-authenticated session active', async ({
+
+  test('Test Case 3: Load home page with pre-authenticated session active', async ({
     page,
     header,
     logger,

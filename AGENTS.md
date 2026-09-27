@@ -48,6 +48,12 @@ This file contains universal instructions, coding standards, and architectural r
   - Close the inspection browser with `playwright-cli close`.
 - In standard/headless environments, run tests with tracing enabled or inspect Playwright HTML reports/traces to diagnose errors before applying fixes.
 
+### Rule 6: Feature Folder Organization & Test Grouping
+- **Do not create a new `.spec.ts` file for every single test case.**
+- Organize tests inside domain/feature folders under `tests/e2e/<feature>/` (e.g., `tests/e2e/auth/`, `tests/e2e/products/`, `tests/e2e/checkout/`).
+- Group closely related test scenarios inside the same `.spec.ts` file under a common `test.describe('Feature: ...')` block.
+- **Maximum 4 test cases per `.spec.ts` file** to maintain balanced parallel execution workers and clean file readability. If a feature exceeds 4 tests, split into sub-topic spec files (e.g., `signup.spec.ts`, `login.spec.ts`).
+
 
 ---
 

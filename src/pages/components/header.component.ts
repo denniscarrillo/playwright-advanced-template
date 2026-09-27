@@ -6,6 +6,7 @@ export class HeaderComponent {
 
   readonly navBar: Locator;
   readonly homeLink: Locator;
+  readonly productsLink: Locator;
   readonly signupLoginLink: Locator;
   readonly logoutLink: Locator;
   readonly deleteAccountLink: Locator;
@@ -14,10 +15,20 @@ export class HeaderComponent {
   constructor(private readonly page: Page) {
     this.navBar = page.locator('#header');
     this.homeLink = page.getByRole('link', { name: /home/i });
+    this.productsLink = page.getByRole('link', { name: /products/i });
     this.signupLoginLink = page.getByRole('link', { name: /signup\s?\/\s?login/i });
     this.logoutLink = page.getByRole('link', { name: /logout/i });
     this.deleteAccountLink = page.getByRole('link', { name: /delete account/i });
     this.loggedInUserText = page.getByText(/logged in as/i);
+  }
+
+  async goToProducts(): Promise<void> {
+    this.logger.info("Clicking on 'Products' header link");
+    await this.productsLink.click();
+    if (this.page.url().includes('#google_vignette')) {
+      this.logger.warn('Google vignette ad detected, navigating directly to /products');
+      await this.page.goto('/products');
+    }
   }
 
   async goToSignupLogin(): Promise<void> {
