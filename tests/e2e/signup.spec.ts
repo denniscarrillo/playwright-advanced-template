@@ -7,8 +7,10 @@ test.describe('Test Case 2: Registration (Signup) flow on Automation Exercise', 
     signupPage,
     accountStatusPage,
     header,
+    logger,
   }) => {
     const userData = generateRandomRegistrationData('qa_user');
+    logger.info(`Starting registration test for user: ${userData.email}`);
 
     await test.step('Navigate to login / signup page and verify visibility', async () => {
       await loginPage.open();

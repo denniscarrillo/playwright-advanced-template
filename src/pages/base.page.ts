@@ -1,12 +1,18 @@
 import { Page } from '@playwright/test';
+import { createLogger, type Logger } from '@/utils/logger.util';
 
 export abstract class BasePage {
-  constructor(protected readonly page: Page) {}
+  protected readonly logger: Logger;
+
+  constructor(protected readonly page: Page) {
+    this.logger = createLogger(this.constructor.name);
+  }
 
   /**
    * Navigates to a path relative to the baseURL.
    */
   async navigate(path = ''): Promise<void> {
+    this.logger.info(`Navigating to: ${path || '/'}`);
     await this.page.goto(path);
   }
 

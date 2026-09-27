@@ -11,7 +11,8 @@ A production-ready, scalable test automation template for End-to-End (E2E) and A
 ## Key Features
 
 - **Page Object Model (POM) + Components**: Modular architecture leveraging [`BasePage`](src/pages/base.page.ts) and reusable components like [`HeaderComponent`](src/pages/components/header.component.ts).
-- **Dependency Injection (Custom Fixtures)**: All pages, components, and helpers are injected via [`base.fixture.ts`](src/fixtures/base.fixture.ts).
+- **Dependency Injection (Custom Fixtures)**: All pages, components, API helpers, and logger are injected via [`base.fixture.ts`](src/fixtures/base.fixture.ts).
+- **Enterprise Structured Logging**: Powered by **Winston** and **Daily Rotate File** via [`logger.util.ts`](src/utils/logger.util.ts), preventing slow `console.log` calls and preserving rotated execution logs in `logs/`.
 - **Declarative `test.step()` Composition**: Human-readable, business-aligned steps providing granular HTML reports and timeline traces.
 - **Data Isolation & API Helpers**: Per-test unique data generation with [`generator.util.ts`](src/utils/generator.util.ts) and fast state seeding/teardown via [`ApiHelper`](src/helpers/api.helper.ts).
 - **Environment Validation with Zod**: Strongly typed, schema-validated environment variables via [`env.config.ts`](env.config.ts) and `.env.<env>`.
@@ -31,10 +32,13 @@ playwright-template-v1/
 │           ├── architecture-pom.md         # Page Object Model and Custom Fixtures
 │           ├── test-data-and-api.md        # Dynamic test data and API helpers
 │           └── locators-and-assertions.md  # Resilient locators and web-first assertions
+├── docs/                                   # Project architecture & system guides
+│   └── logging.md                          # Structured logging with Winston & Daily Rotate
+├── logs/                                   # Daily rotated execution & error logs (ignored in git)
 ├── src/
 │   ├── data/                               # Static constants and route endpoints
 │   │   └── constants/routes.ts
-│   ├── fixtures/                           # Custom Playwright fixtures
+│   ├── fixtures/                           # Custom Playwright fixtures (injects pages, helpers, logger)
 │   │   └── base.fixture.ts
 │   ├── helpers/                            # HTTP clients and backend API helpers
 │   │   └── api.helper.ts
@@ -47,9 +51,10 @@ playwright-template-v1/
 │   │       └── header.component.ts
 │   ├── types/                              # TypeScript models and interfaces
 │   │   └── user.types.ts
-│   └── utils/                              # Pure utility functions (generators, formatters)
+│   └── utils/                              # Pure utility functions (generators, logger)
 │       ├── date.util.ts
-│       └── generator.util.ts
+│       ├── generator.util.ts
+│       └── logger.util.ts                  # Winston + Daily Rotate File configuration
 ├── tests/
 │   ├── api/                                # API / service tests
 │   └── e2e/                                # End-to-End user flow tests
@@ -171,6 +176,7 @@ test.describe('User Authentication Suite', () => {
 ## Reference Guides & Architecture
 
 Explore the specialized documentation included in the repository:
+- [Structured Logging Architecture (`Winston + Daily Rotate`)](docs/logging.md)
 - [Declarative Test Steps Guide (`test.step`)](.agents/skills/playwright-automation/references/test-steps.md)
 - [POM, Components & Fixtures Architecture](.agents/skills/playwright-automation/references/architecture-pom.md)
 - [Dynamic Test Data & API Helpers](.agents/skills/playwright-automation/references/test-data-and-api.md)

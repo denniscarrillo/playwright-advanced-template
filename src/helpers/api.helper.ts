@@ -1,10 +1,14 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 import { UserRegistrationData } from '@/types/user.types';
+import { createLogger, type Logger } from '@/utils/logger.util';
 
 export class ApiHelper {
+  private readonly logger: Logger = createLogger('ApiHelper');
+
   constructor(private readonly request: APIRequestContext) {}
 
   async post<T>(url: string, data?: unknown, headers?: Record<string, string>): Promise<APIResponse> {
+    this.logger.debug(`HTTP POST to: ${url}`);
     return this.request.post(url, {
       data,
       headers,
@@ -12,13 +16,15 @@ export class ApiHelper {
   }
 
   async postForm(url: string, form: Record<string, string>): Promise<APIResponse> {
+    this.logger.debug(`HTTP POST (Form) to: ${url}`);
     return this.request.post(url, {
       form,
     });
   }
 
   async createAccount(userData: UserRegistrationData): Promise<APIResponse> {
-    return this.request.post('/api/createAccount', {
+    this.logger.info(`Sending API request to create account: ${userData.email}`);
+    const response = await this.request.post('/api/createAccount', {
       form: {
         name: userData.name,
         email: userData.email,
@@ -39,18 +45,31 @@ export class ApiHelper {
         mobile_number: userData.address.mobileNumber,
       },
     });
+
+    if (response.ok()) {
+      this.logger.info(`Account created successfully via API [status: ${response.status()}]`);
+    } else {
+      this.logger.error(`Account creation failed via API [status: ${response.status()}]`);
+    }
+
+    return response;
   }
 
   async deleteAccount(email: string, password: string): Promise<APIResponse> {
-    return this.request.delete('/api/deleteAccount', {
+    this.logger.info(`Sending API request to delete account: ${email}`);
+    const response = await this.request.delete('/api/deleteAccount', {
       form: {
         email,
         password,
       },
     });
+
+    this.logger.debug(`Account deletion API response status: ${response.status()}`);
+    return response;
   }
 
   async get(url: string, params?: Record<string, string>): Promise<APIResponse> {
+    this.logger.debug(`HTTP GET to: ${url}`);
     return this.request.get(url, {
       params,
     });

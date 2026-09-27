@@ -4,6 +4,7 @@ import { SignupPage } from '@/pages/signup.page';
 import { AccountStatusPage } from '@/pages/account-status.page';
 import { HeaderComponent } from '@/pages/components/header.component';
 import { ApiHelper } from '@/helpers/api.helper';
+import { createLogger, type Logger } from '@/utils/logger.util';
 
 export interface CustomFixtures {
   loginPage: LoginPage;
@@ -11,9 +12,15 @@ export interface CustomFixtures {
   accountStatusPage: AccountStatusPage;
   header: HeaderComponent;
   apiHelper: ApiHelper;
+  logger: Logger;
 }
 
 export const test = baseTest.extend<CustomFixtures>({
+  logger: async ({}, use, testInfo) => {
+    const testLogger = createLogger(`${testInfo.project.name} › ${testInfo.title}`);
+    await use(testLogger);
+  },
+
   loginPage: async ({ page }, use: (loginPage: LoginPage) => Promise<void>) => {
     const loginPage = new LoginPage(page);
     await use(loginPage);
@@ -41,3 +48,5 @@ export const test = baseTest.extend<CustomFixtures>({
 });
 
 export { expect } from '@playwright/test';
+export { logger } from '@/utils/logger.util';
+

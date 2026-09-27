@@ -55,6 +55,7 @@ This file contains universal instructions, coding standards, and architectural r
 
 When detailed guidance on a specific subsystem is needed, refer to the corresponding reference document:
 
+- **Structured Logging**: [`docs/logging.md`](docs/logging.md)
 - **Declarative Steps**: [`.agents/skills/playwright-automation/references/test-steps.md`](.agents/skills/playwright-automation/references/test-steps.md)
 - **POM, Components & Fixtures**: [`.agents/skills/playwright-automation/references/architecture-pom.md`](.agents/skills/playwright-automation/references/architecture-pom.md)
 - **Data Generation & API**: [`.agents/skills/playwright-automation/references/test-data-and-api.md`](.agents/skills/playwright-automation/references/test-data-and-api.md)

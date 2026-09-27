@@ -8,12 +8,15 @@ test.describe('Test Case 1: Login User with correct email and password', () => {
     loginPage,
     accountStatusPage,
     apiHelper,
+    logger,
   }) => {
     const userData = generateRandomRegistrationData('login_user');
 
     await test.step('Setup: Create test user via API', async () => {
+      logger.info(`Creating test user: ${userData.email}`);
       const response = await apiHelper.createAccount(userData);
       expect(response.status()).toBe(200);
+      logger.info(`Test user created successfully via API`);
     });
 
     await test.step('Navigate to Automation Exercise home page', async () => {

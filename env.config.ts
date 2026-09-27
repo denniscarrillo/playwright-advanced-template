@@ -17,6 +17,7 @@ const baseSchema = z.object({
   BASE_URL: z.url(),
   DEFAULT_USER: z.email(),
   DEFAULT_PASSWORD: z.string(),
+  LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
 });
 
 const devSchema = baseSchema.extend({

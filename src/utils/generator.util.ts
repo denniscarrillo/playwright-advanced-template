@@ -1,14 +1,19 @@
 import { UserCredentials, UserRegistrationData } from '@/types/user.types';
+import { createLogger, type Logger } from '@/utils/logger.util';
+
+const logger: Logger = createLogger('GeneratorUtil');
 
 /**
  * Generates random user credentials for testing.
  */
 export function generateRandomUser(prefix = 'test_user'): UserCredentials {
   const uniqueId = Math.random().toString(36).substring(2, 9);
-  return {
+  const credentials = {
     email: `${prefix}_${uniqueId}@example.com`,
     password: `Pass_${uniqueId}!123`,
   };
+  logger.debug(`Generated random user credentials for: ${credentials.email}`);
+  return credentials;
 }
 
 /**
@@ -16,7 +21,7 @@ export function generateRandomUser(prefix = 'test_user'): UserCredentials {
  */
 export function generateRandomRegistrationData(prefix = 'qa_user'): UserRegistrationData {
   const uniqueId = Math.random().toString(36).substring(2, 9);
-  return {
+  const data: UserRegistrationData = {
     title: 'Mr',
     name: `User ${uniqueId}`,
     email: `${prefix}_${uniqueId}@example.com`,
@@ -39,4 +44,6 @@ export function generateRandomRegistrationData(prefix = 'qa_user'): UserRegistra
       mobileNumber: '+1234567890',
     },
   };
+  logger.debug(`Generated random registration data for: ${data.email}`);
+  return data;
 }

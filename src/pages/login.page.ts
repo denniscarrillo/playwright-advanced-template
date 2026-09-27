@@ -45,14 +45,18 @@ export class LoginPage extends BasePage {
   }
 
   async login({ email, password }: UserCredentials): Promise<void> {
+    this.logger.info(`Filling login form with email: ${email}`);
     await this.loginEmailInput.fill(email);
     await this.loginPasswordInput.fill(password);
     await this.loginButton.click();
+    this.logger.debug('Login submit button clicked');
   }
 
   async initiateSignup(name: string, email: string): Promise<void> {
+    this.logger.info(`Initiating signup for: "${name}" (${email})`);
     await this.signupNameInput.fill(name);
     await this.signupEmailInput.fill(email);
     await this.signupButton.click();
+    this.logger.debug('Signup submit button clicked');
   }
 }
