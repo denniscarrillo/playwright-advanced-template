@@ -69,6 +69,7 @@ This file contains universal instructions, coding standards, and architectural r
 
 When detailed guidance on a specific subsystem is needed, refer to the corresponding reference document:
 
+- **Enterprise Master Architecture Guide**: [`docs/architecture-guide.md`](docs/architecture-guide.md)
 - **Structured Logging**: [`docs/logging.md`](docs/logging.md)
 - **API Testing & Controllers**: [`.agents/skills/playwright-automation/references/api-testing.md`](.agents/skills/playwright-automation/references/api-testing.md)
 - **Declarative Steps**: [`.agents/skills/playwright-automation/references/test-steps.md`](.agents/skills/playwright-automation/references/test-steps.md)

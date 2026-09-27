@@ -218,6 +218,7 @@ test.describe('Feature: User Authentication (Login)', () => {
 ## Reference Guides & Documentation
 
 Explore the specialized guides and architectural references:
+- [Enterprise Architecture & Engineering Master Guide](docs/architecture-guide.md)
 - [API Testing & Controller Architecture](.agents/skills/playwright-automation/references/api-testing.md)
 - [Page Object Model, Components & Fixtures](.agents/skills/playwright-automation/references/architecture-pom.md)
 - [Declarative Test Steps Guide (`test.step()`)](.agents/skills/playwright-automation/references/test-steps.md)
