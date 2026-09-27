@@ -8,24 +8,32 @@ This document describes the architectural standards and separation of concerns u
 
 ```text
 src/
+├── data/                    # Static data & route / endpoint constants
+│   ├── constants/routes.ts  # Application URL routes
+│   └── constants/endpoints.ts # Backend API endpoint definitions
+├── fixtures/                # Custom Playwright fixtures
+│   ├── api.fixture.ts       # Pure API fixtures (AuthApi, ProductsApi, BrandsApi, logger)
+│   ├── auth.fixture.ts      # Authentication state & session persistence fixture
+│   └── pages.fixture.ts     # UI Page Objects, Header Component & AuthApi for pre-seeding
+├── helpers/                 # Backend API domain controllers & clients
+│   └── api/
+│       ├── base.api.ts      # Base HTTP client with logging & standard request methods
+│       └── controllers/     # Domain API controllers (AuthApi, ProductsApi, BrandsApi)
 ├── pages/                   # Page Objects representing full pages / views
 │   ├── base.page.ts         # Abstract BasePage with shared methods (navigate, getTitle, getUrl)
 │   ├── login.page.ts        # Page Object for Login & initial signup form
 │   ├── signup.page.ts       # Page Object for Registration details form
 │   ├── account-status.page.ts # Page Object for confirmation states (created, deleted)
+│   ├── products.page.ts     # Page Object for product catalog & detail pages
 │   └── components/          # Reusable UI widgets / navigation across multiple pages
 │       └── header.component.ts # Main navigation header
-├── fixtures/                # Custom Playwright fixtures
-│   └── base.fixture.ts      # Merges all Page Objects, Components and Helpers into `test`
-├── helpers/                 # API client and backend interaction helpers
-│   └── api.helper.ts        # API requests and data seeding/teardown
-├── utils/                   # Pure utility functions (generators, formatters)
-│   ├── generator.util.ts    # Fake / dynamic test data generator
-│   └── date.util.ts         # Date manipulation helpers
-├── data/                    # Static data & route constants
-│   └── constants/routes.ts  # Endpoint and path definitions
-└── types/                   # TypeScript interfaces and types
-    └── user.types.ts        # User credentials and registration models
+├── types/                   # TypeScript interfaces and types
+│   ├── api.types.ts         # API response and payload models
+│   └── user.types.ts        # User credentials and registration models
+└── utils/                   # Pure utility functions (generators, logger, formatters)
+    ├── date.util.ts         # Date manipulation helpers
+    ├── generator.util.ts    # Fake / dynamic test data generator
+    └── logger.util.ts       # Winston + Daily Rotate File structured logger
 ```
 
 ---
@@ -36,11 +44,21 @@ All page classes should inherit from [`BasePage`](src/pages/base.page.ts):
 
 ```typescript
 import { Page } from '@playwright/test';
+import { Logger } from 'winston';
+import { createScopedLogger } from '@/utils/logger.util';
 
 export abstract class BasePage {
-  constructor(protected readonly page: Page) {}
+  protected readonly logger: Logger;
+
+  constructor(
+    protected readonly page: Page,
+    loggerContext = 'BasePage',
+  ) {
+    this.logger = createScopedLogger(loggerContext);
+  }
 
   async navigate(path = ''): Promise<void> {
+    this.logger.info(`Navigating to: ${path || '/'}`);
     await this.page.goto(path);
   }
 
@@ -86,20 +104,24 @@ export class HeaderComponent {
 
 ---
 
-## 4. Custom Fixtures (`base.fixture.ts`)
+## 4. Custom Fixtures Separation
 
-Instead of instantiating Page Objects inside every test file (`new LoginPage(page)`), extend Playwright's base test with fixtures. This enables dependency injection and automatic lifecycle management:
+Instead of instantiating Page Objects inside every test file (`new LoginPage(page)`), extend Playwright's base test with modular fixtures. We maintain strict separation:
+
+- [`src/fixtures/pages.fixture.ts`](src/fixtures/pages.fixture.ts): For UI E2E tests (injects Page Objects, Components, Logger, and `authApi` for fast preconditions).
+- [`src/fixtures/api.fixture.ts`](src/fixtures/api.fixture.ts): For Pure API tests (injects `baseURL: env.API_BASE_URL`, `authApi`, `productsApi`, `brandsApi`).
 
 ```typescript
+// src/fixtures/pages.fixture.ts
 import { test as baseTest } from '@playwright/test';
 import { LoginPage } from '@/pages/login.page';
 import { HeaderComponent } from '@/pages/components/header.component';
-import { ApiHelper } from '@/helpers/api.helper';
+import { AuthApi } from '@/helpers/api/controllers/auth.api';
 
 export interface CustomFixtures {
   loginPage: LoginPage;
   header: HeaderComponent;
-  apiHelper: ApiHelper;
+  authApi: AuthApi;
 }
 
 export const test = baseTest.extend<CustomFixtures>({
@@ -109,8 +131,8 @@ export const test = baseTest.extend<CustomFixtures>({
   header: async ({ page }, use) => {
     await use(new HeaderComponent(page));
   },
-  apiHelper: async ({ request }, use) => {
-    await use(new ApiHelper(request));
+  authApi: async ({ request }, use) => {
+    await use(new AuthApi(request));
   },
 });
 

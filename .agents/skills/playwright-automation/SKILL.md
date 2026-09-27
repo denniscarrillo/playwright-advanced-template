@@ -26,16 +26,19 @@ When authoring or modifying automated tests in this repository, follow this work
 Refer to the specialized guides in `references/` for detailed implementations:
 
 - [Declarative Test Steps with `test.step()`](./references/test-steps.md): How to structure tests into clear business steps for superior reporting and debugging.
+- [API Test Automation & Controllers](./references/api-testing.md): Architecture of `BaseApi`, domain controllers, `API_ENDPOINTS` constants, and pure API fixtures.
 - [Page Object Model, Components & Fixtures](./references/architecture-pom.md): Architectural layout of `BasePage`, reusable `Component` classes, and custom Playwright fixtures.
-- [Dynamic Test Data & API Helpers](./references/test-data-and-api.md): Using generator utilities and API request helpers for test isolation and teardown.
+- [Dynamic Test Data & API Helpers](./references/test-data-and-api.md): Using generator utilities and API controllers for test isolation and teardown.
 - [Locators & Web-First Assertions](./references/locators-and-assertions.md): Selector priority, avoiding strict mode violations, and resilient assertions.
 
 ---
 
-## Standard Test Case Template
+## Standard Test Templates
+
+### 1. End-to-End (E2E) UI Test Template
 
 ```typescript
-import { test, expect } from '@/fixtures/base.fixture';
+import { test, expect } from '@/fixtures/pages.fixture';
 import { generateRandomRegistrationData } from '@/utils/generator.util';
 
 test.describe('Test Case Suite: <Feature Name>', () => {
@@ -44,12 +47,12 @@ test.describe('Test Case Suite: <Feature Name>', () => {
     header,
     loginPage,
     accountStatusPage,
-    apiHelper,
+    authApi,
   }) => {
     const userData = generateRandomRegistrationData('qa_user');
 
     await test.step('Setup: Pre-seed test user via API', async () => {
-      const response = await apiHelper.createAccount(userData);
+      const { response } = await authApi.createAccount(userData);
       expect(response.status()).toBe(200);
     });
 
@@ -79,6 +82,28 @@ test.describe('Test Case Suite: <Feature Name>', () => {
       await header.deleteAccount();
       await expect(accountStatusPage.accountDeletedHeading).toBeVisible();
       await accountStatusPage.clickContinue();
+    });
+  });
+});
+```
+
+### 2. API Test Template
+
+```typescript
+import { test, expect } from '@/fixtures/api.fixture';
+
+test.describe('API Suite: <Feature Domain>', () => {
+  test('should fetch and validate resource response', async ({ productsApi }) => {
+    let result: Awaited<ReturnType<typeof productsApi.getAllProducts>>;
+
+    await test.step('Send GET request for products list', async () => {
+      result = await productsApi.getAllProducts();
+      expect(result.response.status()).toBe(200);
+    });
+
+    await test.step('Verify response payload and business schema', async () => {
+      expect(result.data.responseCode).toBe(200);
+      expect(result.data.products.length).toBeGreaterThan(0);
     });
   });
 });
