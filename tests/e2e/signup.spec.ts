@@ -1,7 +1,10 @@
-import { test, expect } from '@/fixtures/base.fixture';
+import { test, expect } from '@/fixtures/pages.fixture';
 import { generateRandomRegistrationData } from '@/utils/generator.util';
 
 test.describe('Test Case 2: Registration (Signup) flow on Automation Exercise', () => {
+  // Guest flow: Run without pre-authenticated session cookies
+  test.use({ useAuth: false });
+
   test('should register a new user and verify account creation', async ({
     loginPage,
     signupPage,

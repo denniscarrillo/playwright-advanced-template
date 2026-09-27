@@ -33,6 +33,7 @@ playwright-template-v1/
 │           ├── test-data-and-api.md        # Dynamic test data and API helpers
 │           └── locators-and-assertions.md  # Resilient locators and web-first assertions
 ├── docs/                                   # Project architecture & system guides
+│   ├── auth-setup.md                       # Global authentication setup & session persistence
 │   └── logging.md                          # Structured logging with Winston & Daily Rotate
 ├── logs/                                   # Daily rotated execution & error logs (ignored in git)
 ├── src/
@@ -176,7 +177,8 @@ test.describe('User Authentication Suite', () => {
 ## Reference Guides & Architecture
 
 Explore the specialized documentation included in the repository:
-- [Structured Logging Architecture (`Winston + Daily Rotate`)](docs/logging.md)
+- [Global Auth & Storage State Persistence (`docs/auth-setup.md`)](docs/auth-setup.md)
+- [Structured Logging Architecture (`docs/logging.md`)](docs/logging.md)
 - [Declarative Test Steps Guide (`test.step`)](.agents/skills/playwright-automation/references/test-steps.md)
 - [POM, Components & Fixtures Architecture](.agents/skills/playwright-automation/references/architecture-pom.md)
 - [Dynamic Test Data & API Helpers](.agents/skills/playwright-automation/references/test-data-and-api.md)

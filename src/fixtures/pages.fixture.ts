@@ -1,4 +1,4 @@
-import { test as baseTest } from '@playwright/test';
+import { authTest, type AuthOptions } from '@/fixtures/auth.fixture';
 import { LoginPage } from '@/pages/login.page';
 import { SignupPage } from '@/pages/signup.page';
 import { AccountStatusPage } from '@/pages/account-status.page';
@@ -15,7 +15,7 @@ export interface CustomFixtures {
   logger: Logger;
 }
 
-export const test = baseTest.extend<CustomFixtures>({
+export const test = authTest.extend<CustomFixtures>({
   logger: async ({}, use, testInfo) => {
     const testLogger = createLogger(`${testInfo.project.name} › ${testInfo.title}`);
     await use(testLogger);
