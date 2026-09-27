@@ -1,0 +1,78 @@
+# Agent Guidelines & Playwright Architecture (`AGENTS.md`)
+
+This file contains universal instructions, coding standards, and architectural rules for any AI agent or developer working on this Playwright test automation repository.
+
+---
+
+## 1. Project Architecture & Standards
+
+- **Language & Framework**: TypeScript with `@playwright/test`.
+- **Design Pattern**: Page Object Model (POM) + Component Object Model.
+- **Fixture Injection**: All Page Objects, Components, and API Helpers must be provided through custom fixtures in [`src/fixtures/base.fixture.ts`](src/fixtures/base.fixture.ts).
+- **Environment Management**: Environment variables validated via Zod schemas in [`env.config.ts`](env.config.ts) and loaded from `.env.<env>`.
+
+---
+
+## 2. Mandatory Rules for Authoring Tests
+
+### Rule 1: Always Use Declarative `test.step()`
+- Every test specification **must** organize actions and assertions into `await test.step('Description', async () => { ... })` blocks.
+- Step descriptions must reflect business steps / user actions (e.g. `'1. Navegar a la página principal'`, `'2. Iniciar sesión con credenciales válidas'`).
+- Group the relevant action and its expected verification together in the same step.
+- See detailed guide: [Declarative Steps Reference](.agents/skills/playwright-automation/references/test-steps.md).
+
+### Rule 2: Page Object & Component Hierarchy
+- Pages representing full views must inherit from [`BasePage`](src/pages/base.page.ts) in `src/pages/`.
+- Reusable page sections (Header, Navigation, Modals) must be encapsulated in `src/pages/components/`.
+- Never instantiate Page Objects directly with `new MyPage(page)` inside test files; always use the extended fixture from `@/fixtures/base.fixture`.
+- See detailed guide: [Architecture & POM Reference](.agents/skills/playwright-automation/references/architecture-pom.md).
+
+### Rule 3: Dynamic Test Data & API Preconditions
+- Never use shared static credentials for destructive actions (e.g., account deletion).
+- Generate isolated test data per test run using [`generateRandomRegistrationData()`](src/utils/generator.util.ts).
+- Prefer pre-seeding state or teardown via [`ApiHelper`](src/helpers/api.helper.ts) to keep tests fast and isolated.
+- See detailed guide: [Test Data & API Reference](.agents/skills/playwright-automation/references/test-data-and-api.md).
+
+### Rule 4: Resilient Locators & Web-First Assertions
+- Prioritize user-facing locators (`getByRole`, `getByLabel`, `getByText`) or explicit test attributes (`locator('[data-qa="..."]')`).
+- Avoid strict mode violations (e.g., ensure locators match exactly 1 target element).
+- Always use auto-retrying web-first assertions (`await expect(locator).toBeVisible()`) instead of manual waits or boolean evaluation.
+- See detailed guide: [Locators & Assertions Reference](.agents/skills/playwright-automation/references/locators-and-assertions.md).
+
+### Rule 5: Browser Inspection & Failure Debugging
+- Whenever creating, updating, or debugging Page Objects and tests in environments supporting the [`playwright-cli`](.agents/skills/playwright-cli/SKILL.md) skill (e.g., Antigravity):
+  - Open the target page using `playwright-cli open <url>`.
+  - Capture and inspect the live DOM tree using `playwright-cli snapshot` or `playwright-cli find "<text>"`.
+  - Validate selectors against the live DOM snapshot before adding them to Page Objects.
+  - Close the inspection browser with `playwright-cli close`.
+- In standard/headless environments, run tests with tracing enabled or inspect Playwright HTML reports/traces to diagnose errors before applying fixes.
+
+
+---
+
+## 3. Reference Documentation Index
+
+When detailed guidance on a specific subsystem is needed, refer to the corresponding reference document:
+
+- **Declarative Steps**: [`.agents/skills/playwright-automation/references/test-steps.md`](.agents/skills/playwright-automation/references/test-steps.md)
+- **POM, Components & Fixtures**: [`.agents/skills/playwright-automation/references/architecture-pom.md`](.agents/skills/playwright-automation/references/architecture-pom.md)
+- **Data Generation & API**: [`.agents/skills/playwright-automation/references/test-data-and-api.md`](.agents/skills/playwright-automation/references/test-data-and-api.md)
+- **Locators & Assertions**: [`.agents/skills/playwright-automation/references/locators-and-assertions.md`](.agents/skills/playwright-automation/references/locators-and-assertions.md)
+
+---
+
+## 4. Useful Commands
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests in UI mode
+pnpm test:ui
+
+# Run specific test file
+npx playwright test tests/e2e/login.spec.ts
+
+# Open HTML report
+pnpm report
+```

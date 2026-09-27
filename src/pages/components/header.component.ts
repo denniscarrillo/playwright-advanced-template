@@ -2,17 +2,30 @@ import { Locator, Page } from '@playwright/test';
 
 export class HeaderComponent {
   readonly navBar: Locator;
-  readonly userMenuButton: Locator;
-  readonly logoutButton: Locator;
+  readonly homeLink: Locator;
+  readonly signupLoginLink: Locator;
+  readonly logoutLink: Locator;
+  readonly deleteAccountLink: Locator;
+  readonly loggedInUserText: Locator;
 
   constructor(private readonly page: Page) {
-    this.navBar = page.locator('header, nav');
-    this.userMenuButton = page.getByRole('button', { name: /user|perfil|account/i });
-    this.logoutButton = page.getByRole('button', { name: /log\s?out|cerrar sesión/i });
+    this.navBar = page.locator('#header');
+    this.homeLink = page.getByRole('link', { name: /home/i });
+    this.signupLoginLink = page.getByRole('link', { name: /signup\s?\/\s?login/i });
+    this.logoutLink = page.getByRole('link', { name: /logout/i });
+    this.deleteAccountLink = page.getByRole('link', { name: /delete account/i });
+    this.loggedInUserText = page.getByText(/logged in as/i);
+  }
+
+  async goToSignupLogin(): Promise<void> {
+    await this.signupLoginLink.click();
   }
 
   async logout(): Promise<void> {
-    await this.userMenuButton.click();
-    await this.logoutButton.click();
+    await this.logoutLink.click();
+  }
+
+  async deleteAccount(): Promise<void> {
+    await this.deleteAccountLink.click();
   }
 }

@@ -5,19 +5,39 @@ import { ROUTES } from '@/data/constants/routes';
 import { UserCredentials } from '@/types/user.types';
 
 export class LoginPage extends BasePage {
-  readonly emailInput: Locator;
-  readonly passwordInput: Locator;
-  readonly submitButton: Locator;
-  readonly errorMessage: Locator;
   readonly header: HeaderComponent;
+
+  // Login Form
+  readonly loginHeading: Locator;
+  readonly loginEmailInput: Locator;
+  readonly loginPasswordInput: Locator;
+  readonly loginButton: Locator;
+  readonly errorMessage: Locator;
+
+  // Signup Form
+  readonly signupHeading: Locator;
+  readonly signupNameInput: Locator;
+  readonly signupEmailInput: Locator;
+  readonly signupButton: Locator;
+  readonly signupErrorMessage: Locator;
 
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
-    this.emailInput = page.getByLabel(/email|usuario/i).or(page.locator('input[type="email"], input[name="username"]'));
-    this.passwordInput = page.getByLabel(/password|contraseña/i).or(page.locator('input[type="password"]'));
-    this.submitButton = page.getByRole('button', { name: /log\s?in|iniciar sesión|sign in/i });
-    this.errorMessage = page.locator('.error-message, [role="alert"]');
+
+    // Login Form Locators
+    this.loginHeading = page.getByRole('heading', { name: 'Login to your account' });
+    this.loginEmailInput = page.locator('[data-qa="login-email"]');
+    this.loginPasswordInput = page.locator('[data-qa="login-password"]');
+    this.loginButton = page.locator('[data-qa="login-button"]');
+    this.errorMessage = page.locator('.login-form p');
+
+    // Signup Form Locators
+    this.signupHeading = page.getByRole('heading', { name: 'New User Signup!' });
+    this.signupNameInput = page.locator('[data-qa="signup-name"]');
+    this.signupEmailInput = page.locator('[data-qa="signup-email"]');
+    this.signupButton = page.locator('[data-qa="signup-button"]');
+    this.signupErrorMessage = page.locator('.signup-form p');
   }
 
   async open(): Promise<void> {
@@ -25,8 +45,14 @@ export class LoginPage extends BasePage {
   }
 
   async login({ email, password }: UserCredentials): Promise<void> {
-    await this.emailInput.fill(email);
-    await this.passwordInput.fill(password);
-    await this.submitButton.click();
+    await this.loginEmailInput.fill(email);
+    await this.loginPasswordInput.fill(password);
+    await this.loginButton.click();
+  }
+
+  async initiateSignup(name: string, email: string): Promise<void> {
+    await this.signupNameInput.fill(name);
+    await this.signupEmailInput.fill(email);
+    await this.signupButton.click();
   }
 }

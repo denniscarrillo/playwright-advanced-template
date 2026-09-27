@@ -1,9 +1,15 @@
 import { test as baseTest } from '@playwright/test';
 import { LoginPage } from '@/pages/login.page';
+import { SignupPage } from '@/pages/signup.page';
+import { AccountStatusPage } from '@/pages/account-status.page';
+import { HeaderComponent } from '@/pages/components/header.component';
 import { ApiHelper } from '@/helpers/api.helper';
 
 export interface CustomFixtures {
   loginPage: LoginPage;
+  signupPage: SignupPage;
+  accountStatusPage: AccountStatusPage;
+  header: HeaderComponent;
   apiHelper: ApiHelper;
 }
 
@@ -11,6 +17,21 @@ export const test = baseTest.extend<CustomFixtures>({
   loginPage: async ({ page }, use: (loginPage: LoginPage) => Promise<void>) => {
     const loginPage = new LoginPage(page);
     await use(loginPage);
+  },
+
+  signupPage: async ({ page }, use: (signupPage: SignupPage) => Promise<void>) => {
+    const signupPage = new SignupPage(page);
+    await use(signupPage);
+  },
+
+  accountStatusPage: async ({ page }, use: (accountStatusPage: AccountStatusPage) => Promise<void>) => {
+    const accountStatusPage = new AccountStatusPage(page);
+    await use(accountStatusPage);
+  },
+
+  header: async ({ page }, use: (header: HeaderComponent) => Promise<void>) => {
+    const header = new HeaderComponent(page);
+    await use(header);
   },
 
   apiHelper: async ({ request }, use: (apiHelper: ApiHelper) => Promise<void>) => {
