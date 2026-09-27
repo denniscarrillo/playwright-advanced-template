@@ -10,3 +10,5 @@ node_modules/
 # Env files
 .env.qa
 .env.dev
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
